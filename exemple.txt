@@ -1,0 +1,14 @@
+etape 1 : 
+alphabet  [a,b]
+
+etape 2 : 
+Ensemble des etats [1,2]
+
+etape 3 : 
+Etats initiaux [1]
+
+etape 4 : 
+Etats finaux [2]	
+
+etape 5 : 
+regles de création  [1 -> a -> 2]
