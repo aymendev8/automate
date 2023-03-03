@@ -1,36 +1,44 @@
 import graphviz as gv
+import os
 
 alphabet = []
-etats = []
-etats_initiaux = []
-etats_finaux = []
-transitions = []
+states = []
+initial_states = []
+final_states = []
+rules = []
 
 
-def lire_fichier():
-    with open("automate.txt", "r") as f:
-        alphabet = f.readline().split()
-        etats = f.readline().split()
-        etats_initiaux = f.readline().split()
-        etats_finaux = f.readline().split()
-        for line in f:
-            transitions.append(line.split())
-    # debug
-    print(alphabet)
-    print(etats)
-    print(etats_initiaux)
-    print(etats_finaux)
-    print(transitions)
+def create_graph():
+    with open("automate.txt", 'r') as f:
+        alphabet = f.readline().strip().split()
+        states = f.readline().strip().split()
+        initial_states = f.readline().strip().split()
+        final_states = f.readline().strip().split()
+        rules = f.readline().strip()
+    # Créer un objet graphique
+    graph = gv.Digraph()
+    graph.node('dummy', style='invisible')
+
+    # Ajouter les états
+    for state in states:
+        if state in initial_states:
+            graph.node(state, shape='circle')
+            graph.edge('dummy', state)
+        elif state in final_states:
+            graph.node(state, shape='doublecircle')
+        else:
+            graph.node(state)
+
+    # Ajouter les règles
+    rule_parts = rules.split('>')
+    start_state = rule_parts[0].strip()
+    end_state = rule_parts[-1].strip()
+    symbol = rule_parts[1].strip()
+    graph.edge(start_state, end_state, label=symbol)
+
+    # Rendre le graphique
+    graph.render('graph', view=True)
+    os.system('start graph.pdf')
 
 
-def creer_graph():
-    dot = gv.Digraph(comment='The Round Table')
-    dot.node('A', 'King Arthur')
-    dot.node('B', 'Sir Bedevere the Wise')
-    dot.node('L', 'Sir Lancelot the Brave')
-    dot.edges(['AB', 'AL'])
-    dot.edge('B', 'L', constraint='false')
-    dot.render('test-output/round-table.gv', view=True)
-
-
-creer_graph()
+create_graph()
