@@ -42,18 +42,23 @@ def etats_co_accessibles():
     print(f"États co-accessibles : {co_accessibles}")
 
 
-graphe.node('dummy', shape='point')
-for etat in etats:
-    if etat in etats_initiaux:
-        graphe.node(etat, shape='circle')
-        graphe.edge('dummy', etat)
-    elif etat in etats_finaux:
-        graphe.node(etat, shape='doublecircle')
-    else:
-        graphe.node(etat, shape='circle')
+def afficher_automate():
+    graphe.node('dummy', shape='point')
+    for etat in etats:
+        if etat in etats_initiaux:
+            graphe.node(etat, shape='circle')
+            graphe.edge('dummy', etat)
+        elif etat in etats_finaux:
+            graphe.node(etat, shape='doublecircle')
+        else:
+            graphe.node(etat, shape='circle')
 
-for regle in les_regles:
-    origine, c, destination = regle
-    graphe.edge(origine, destination, label=c)
+    for regle in les_regles:
+        origine, c, destination = regle
+        graphe.edge(origine, destination, label=c)
 
-graphe.render('graph', view=True)
+    graphe.render('graph', view=True)
+
+
+lecture_fichier()
+afficher_automate()
