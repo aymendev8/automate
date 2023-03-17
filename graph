@@ -1,8 +1,2 @@
 digraph {
-	dummy [style=invisible]
-	1 [shape=circle]
-	dummy -> 1
-	2 [shape=doublecircle]
-	3 [shape=doublecircle]
-	1 -> 2 [label=a]
 }
