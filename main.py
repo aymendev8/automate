@@ -7,17 +7,24 @@ etats_finaux = []
 regles = []
 les_regles = []
 
+# initialisation du graphe
 graphe = gv.Digraph()
+graphe.attr(rankdir='LR')
+
+# initialisation du graphe complet
+graphe_complet = gv.Digraph()
+graphe_complet.attr(rankdir='LR')
 
 
 def lecture_fichier():
     with open("automate.txt", 'r') as f:
-        alphabet = f.readline().strip().split()
+        global alphabet, etats, etats_initiaux, etats_finaux, regles, les_regles
+        alphabet = f.readline().strip().split(",")
         etats = f.readline().strip().split(",")
         etats_initiaux = f.readline().strip().split()
         etats_finaux = f.readline().strip().split(",")
         regles = f.read().strip()
-        segments = regles.split(',')
+        segments = regles.split(';')
         for segment in segments:
             elements = segment.split('>')
             les_regles.append(elements)
@@ -56,8 +63,11 @@ def afficher_automate():
     for regle in les_regles:
         origine, c, destination = regle
         graphe.edge(origine, destination, label=c)
-
     graphe.render('graph', view=True)
+
+
+def completer_automate():
+    pass
 
 
 lecture_fichier()
