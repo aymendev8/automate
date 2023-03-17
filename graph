@@ -11,4 +11,5 @@ digraph {
 	2 -> 2 [label="a,b"]
 	2 -> 3 [label="c,d"]
 	4 -> 3 [label="c,d"]
+	1 -> p [label="c,d"]
 }

@@ -6,7 +6,7 @@ etats_initiaux = []
 etats_finaux = []
 regles = []
 les_regles = []
-
+les_regles_complete = []
 # initialisation du graphe
 graphe = gv.Digraph()
 graphe.attr(rankdir='LR')
@@ -49,26 +49,31 @@ def etats_co_accessibles():
     print(f"États co-accessibles : {co_accessibles}")
 
 
-def afficher_automate():
-    graphe.node('dummy', shape='point')
+def afficher_automate(g, r):
+    g.node('dummy', shape='point')
     for etat in etats:
         if etat in etats_initiaux:
-            graphe.node(etat, shape='circle')
-            graphe.edge('dummy', etat)
+            g.node(etat, shape='circle')
+            g.edge('dummy', etat)
         elif etat in etats_finaux:
-            graphe.node(etat, shape='doublecircle')
+            g.node(etat, shape='doublecircle')
         else:
-            graphe.node(etat, shape='circle')
+            g.node(etat, shape='circle')
 
-    for regle in les_regles:
+    for regle in r:
         origine, c, destination = regle
         graphe.edge(origine, destination, label=c)
     graphe.render('graph', view=True)
 
 
 def completer_automate():
-    pass
+    for regles in les_regles:
+        for etat in etats:
+            for lettre in alphabet:
+                if regles[0] != etat & regles[1] != lettre:
+
+    afficher_automate(graphe_complet, les_regles_complete)
 
 
 lecture_fichier()
-afficher_automate()
+afficher_automate(graphe, les_regles)
