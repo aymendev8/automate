@@ -1,8 +1,8 @@
 digraph {
 	graph [rankdir=LR]
-	dummy [shape=point]
+	Etat1 [shape=point]
 	1 [shape=circle style=bold]
-	dummy -> 1
+	Etat1 -> 1
 	2 [shape=circle]
 	3 [shape=doublecircle style=bold]
 	4 [shape=circle]
