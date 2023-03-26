@@ -134,7 +134,6 @@ def determiniser_automate():
         les_regles_deterministe = les_regles_complete
         etat_initial_deterministe = etats_initiaux[0]
         etats_finaux_deterministe = etats_finaux
-        return
     else:   
         les_regles_deterministe = []
         etats_suivants = set([etats_initiaux[0]])
@@ -161,17 +160,31 @@ def determiniser_automate():
                 etats_finaux_deterministe.append(etat_courant)
 
     
-
+def accepter_mot(mot):
+    global etat_initial_deterministe, les_regles_deterministe
+    etat_courant = etat_initial_deterministe
+    for lettre in mot:
+        for regle in les_regles_deterministe:
+            origine, c, destination = regle
+            if origine == etat_courant and c == lettre:
+                etat_courant = destination
+                break
+        else:
+            return False
+    if etat_courant in etats_finaux_deterministe:
+        return True
+    else:
+        return False
 
 lecture_fichier()
 completer_automate()
-afficher_regles(les_regles)
-print("-------------------------")
-afficher_regles(les_regles_complete)
-afficher_automate(graphe, les_regles)
-afficher_automate(graphe_complet, les_regles_complete)
+#afficher_regles(les_regles)
+#print("-------------------------")
+#afficher_regles(les_regles_complete)
+#afficher_automate(graphe, les_regles)
+#afficher_automate(graphe_complet, les_regles_complete)
 determiniser_automate()
 print("-------------------------")
-afficher_regles(les_regles_deterministe)
-afficher_automate(graphe_deterministe, les_regles_deterministe)
-print(est_deterministe())
+#afficher_regles(les_regles_deterministe)
+#afficher_automate(graphe_deterministe, les_regles_deterministe)
+print(accepter_mot("aac"))
