@@ -4,11 +4,15 @@ digraph {
 	1 [shape=circle style=bold]
 	Etat1 -> 1
 	2 [shape=circle]
-	3 [shape=doublecircle style=bold]
+	5 [shape=doublecircle style=bold]
 	4 [shape=circle]
+	Etat3 [shape=point]
+	3 [shape=circle style=bold]
+	Etat3 -> 3
+	3 -> 3 [label=a]
+	3 -> 4 [label=b]
 	1 -> 2 [label=a]
 	1 -> 4 [label=b]
-	2 -> 2 [label="a,b" constraint=false]
-	2 -> 3 [label="d,c" constraint=false]
-	4 -> 3 [label="c,d" constraint=false]
+	4 -> 5 [label="c,d" constraint=false]
+	2 -> 5 [label="c,d" constraint=false]
 }

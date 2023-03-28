@@ -24,6 +24,7 @@ graphe_complet = gv.Digraph()
 # initialisation du graphe deterministe
 graphe_deterministe = gv.Digraph()
 
+
 def lecture_fichier():
     global alphabet, etats, etats_initiaux, etats_finaux, regles, les_regles
     with open("automate.txt", 'r') as f:
@@ -37,9 +38,10 @@ def lecture_fichier():
         elements = segment.split('>')
         les_regles.append(elements)
 
+
 def afficher_regles(regles):
     for regle in regles:
-        origine , c, destination = regle
+        origine, c, destination = regle
         print(f"{origine} --{c}--> {destination}")
 
 
@@ -53,6 +55,7 @@ def etats_accessibles():
             accessibles.add(destination)
     print(f"États accessibles : {accessibles}")
 
+
 def etats_co_accessibles():
     global les_regles
     co_accessibles = set(etats_finaux)
@@ -61,6 +64,7 @@ def etats_co_accessibles():
         if destination in co_accessibles:
             co_accessibles.add(origine)
     print(f"États co-accessibles : {co_accessibles}")
+
 
 def afficher_automate(g, r):
     global etats, etats_initiaux, etats_finaux
@@ -81,7 +85,7 @@ def afficher_automate(g, r):
         origine, c, destination = regle
         for regle2 in regles_doublons[i:]:
             origine2, c2, destination2 = regle2
-            if origine2 == origine and destination2 == destination and  c2 != c:
+            if origine2 == origine and destination2 == destination and c2 != c:
                 lettres += str(regle2[1]) + ","
                 regles_doublons.remove(regle2)
                 compteur += 1
@@ -90,7 +94,8 @@ def afficher_automate(g, r):
         else:
             if lettres[len(lettres)-1] == ",":
                 lettres = lettres[:len(lettres)-1]
-            g.edge(origine, destination, label=c+","+lettres, constraint='false')
+            g.edge(origine, destination, label=c +
+                   ","+lettres, constraint='false')
     if g == graphe:
         g.render('graphe', view=True)
     elif g == graphe_complet:
@@ -98,18 +103,20 @@ def afficher_automate(g, r):
     elif g == graphe_deterministe:
         g.render('graphe_deterministe', view=True)
 
+
 def completer_automate():
     global les_regles_complete, les_regles, alphabet, etats
     for regle in les_regles:
         les_regles_complete.append(regle)
     for etat in etats:
         for lettre in alphabet:
-                for regle in les_regles:
-                    origine, c, destination = regle
-                    if origine == etat and lettre == c:
-                        break
-                else:
-                    les_regles_complete.append([etat, lettre, "p"])
+            for regle in les_regles:
+                origine, c, destination = regle
+                if origine == etat and lettre == c:
+                    break
+            else:
+                les_regles_complete.append([etat, lettre, "p"])
+
 
 def est_deterministe():
     global les_regles, alphabet, etats
@@ -123,9 +130,11 @@ def est_deterministe():
                 if origine == etat and lettre == c:
                     compteur += 1
             if compteur > 1:
-                print(f"État {etat} et lettre {lettre} : {compteur} transitions")
+                print(
+                    f"État {etat} et lettre {lettre} : {compteur} transitions")
                 return False
     return True
+
 
 def determiniser_automate():
     global alphabet, etats, etats_initiaux, etats_finaux, les_regles, les_regles_deterministe, etat_initial_deterministe, etats_finaux_deterministe
@@ -134,35 +143,13 @@ def determiniser_automate():
         les_regles_deterministe = les_regles_complete
         etat_initial_deterministe = etats_initiaux[0]
         etats_finaux_deterministe = etats_finaux
-    else:   
-        les_regles_deterministe = []
-        etats_suivants = set([etats_initiaux[0]])
-        etats_traites = set()
-        etat_initial_deterministe = tuple(etats_suivants)
-        while etats_suivants:
-            etat_courant = etats_suivants.pop()
-            if etat_courant in etats_traites:
-                continue
-            etats_traites.add(etat_courant)
-            est_final = any(etat in etat_courant for etat in etats_finaux)
-            for lettre in alphabet:
-                destinations = set()
-                for regle in les_regles:
-                    if regle[0] in etat_courant and regle[1] == lettre:
-                        destinations.add(regle[2])
-                if not destinations:
-                    continue
-                nouvel_etat = tuple(destinations)
-                les_regles_deterministe.append((etat_courant, lettre, nouvel_etat))
-                if nouvel_etat not in etats_traites:
-                    etats_suivants.add(nouvel_etat)
-            if est_final:
-                etats_finaux_deterministe.append(etat_courant)
+    else:
+        pass
 
-    
+
 def accepter_mot(mot):
-    global etat_initial_deterministe, les_regles_deterministe
-    etat_courant = etat_initial_deterministe
+    global etats_initiaux, les_regles
+    etat_courant = etats_initiaux[0]
     for lettre in mot:
         for regle in les_regles_deterministe:
             origine, c, destination = regle
@@ -176,15 +163,16 @@ def accepter_mot(mot):
     else:
         return False
 
+
 lecture_fichier()
 completer_automate()
-#afficher_regles(les_regles)
-#print("-------------------------")
-#afficher_regles(les_regles_complete)
-#afficher_automate(graphe, les_regles)
-#afficher_automate(graphe_complet, les_regles_complete)
+afficher_regles(les_regles)
+print("-------------------------")
+afficher_regles(les_regles_complete)
+afficher_automate(graphe, les_regles)
+afficher_automate(graphe_complet, les_regles_complete)
 determiniser_automate()
 print("-------------------------")
-#afficher_regles(les_regles_deterministe)
-#afficher_automate(graphe_deterministe, les_regles_deterministe)
-print(accepter_mot("aac"))
+afficher_regles(les_regles_deterministe)
+afficher_automate(graphe_deterministe, les_regles_deterministe)
+print(accepter_mot("aymen.kadri@"))
