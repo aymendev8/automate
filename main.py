@@ -38,40 +38,29 @@ def lecture_fichier():
         elements = segment.split('>')
         les_regles.append(elements)
 
-#affiche n'importe quel tableau contenant des regles de transition
-def afficher_regles(regles):
-    for regle in regles:
-        origine, c, destination = regle
-        print(f"{origine} --{c}--> {destination}")
 
-def afficher_liste(l):
-    print("[",end="")
-    for element in l:
-        print(element, end="") 
-    print("]")
-# affiche les etats accessibles
 def etats_accessibles():
     global les_regles
-    accessibles = []
+    accessibles = set()
+    accessibles.add(etats_initiaux[0])
     for regle in les_regles:
         origine, c, destination = regle
-        if origine not in accessibles:
-            accessibles.append(origine)
-    afficher_liste(accessibles)
+        if origine in accessibles:
+            accessibles.add(destination)
+    print(f"États accessibles : {accessibles}")
 
 
-# affiche les etats co-accessibles
 def etats_co_accessibles():
     global les_regles
-    co_accessibles = []
+    co_accessibles = set(etats_finaux)
     for regle in les_regles:
         origine, c, destination = regle
-        if destination not in co_accessibles:
-            co_accessibles.append(destination)
-    afficher_liste(co_accessibles)
-    
+        if destination in co_accessibles:
+            co_accessibles.add(origine)
+    print(f"États co-accessibles : {co_accessibles}")
 
-#affiche un automate, avec en parametre le graphe a afficher et les regles de transition
+
+# affiche un automate, avec en parametre le graphe a afficher et les regles de transition
 def afficher_automate(g, r):
     global etats, etats_initiaux, etats_finaux
     regles_doublons = r.copy()
@@ -81,7 +70,7 @@ def afficher_automate(g, r):
             if etat in etats_finaux:
                 g.node(etat, shape='doublecircle', style='bold')
                 g.node('Etat'+str(etat), shape='point')
-            else : 
+            else:
                 g.node(etat, shape='circle', style='bold')
                 g.node('Etat'+str(etat), shape='point')
             g.edge('Etat'+str(etat), etat)
@@ -113,11 +102,14 @@ def afficher_automate(g, r):
     elif g == graphe_deterministe:
         g.render('graphe_deterministe', view=True)
 
+
 def automate_initial():
     lecture_fichier()
     afficher_automate(graphe, les_regles)
 
-#completer l'automate en creant un nouveau tableau de regles appeler les_regles_complete
+# completer l'automate en creant un nouveau tableau de regles appeler les_regles_complete
+
+
 def completer_automate():
     global les_regles_complete, les_regles, alphabet, etats
     for regle in les_regles:
@@ -132,7 +124,9 @@ def completer_automate():
                 les_regles_complete.append([etat, lettre, "p"])
     afficher_automate(graphe_complet, les_regles_complete)
 
-#verifie si l'automate est deterministe
+# verifie si l'automate est deterministe
+
+
 def est_deterministe():
     global les_regles, alphabet, etats
     if len(etats_initiaux) > 1:
@@ -150,13 +144,15 @@ def est_deterministe():
                 return False
     return True
 
-#determinise l'automate en modifiant les_regles par des regles deterministes 
+# determinise l'automate en modifiant les_regles par des regles deterministes
+
+
 def determiniser_automate():
     global les_regles, alphabet, etats, etats_initiaux, etats_finaux, graphe_deterministe
     if not est_deterministe():
         print("L'automate n'est pas déterministe")
         nouveaux_etats = set()
-        etats_a_traiter = deque() # on utilise une file pour traiter les états dans l'ordre
+        etats_a_traiter = deque()  # on utilise une file pour traiter les états dans l'ordre
         etats_a_traiter.append(tuple(etats_initiaux))
         nouveaux_etats.add(tuple(etats_initiaux))
 
@@ -177,15 +173,20 @@ def determiniser_automate():
                     nouveaux_etats.add(tuple(etats_accessibles))
 
                 if etats_accessibles:
-                    nouvelles_regles.append([etat_courant, lettre, tuple(etats_accessibles)])
+                    nouvelles_regles.append(
+                        [etat_courant, lettre, tuple(etats_accessibles)])
 
         etats = [','.join(sorted(list(etat))) for etat in nouveaux_etats]
         etats_initiaux = [','.join(sorted(list(tuple(etats_initiaux))))]
-        etats_finaux = [etat for etat in etats if any(e in etat.split(',') for e in etats_finaux)]
-        les_regles = [[','.join(sorted(list(origine))), lettre, ','.join(sorted(list(destination)))] for origine, lettre, destination in nouvelles_regles]
+        etats_finaux = [etat for etat in etats if any(
+            e in etat.split(',') for e in etats_finaux)]
+        les_regles = [[','.join(sorted(list(origine))), lettre, ','.join(sorted(
+            list(destination)))] for origine, lettre, destination in nouvelles_regles]
     afficher_automate(graphe_deterministe, les_regles)
 
-#verifie si l'automate accepte un mot donne 
+# verifie si l'automate accepte un mot donne
+
+
 def accepter_mot(mot):
     global les_regles, etats_initiaux, etats_finaux
     etat_courant = etats_initiaux[0]
@@ -201,7 +202,7 @@ def accepter_mot(mot):
     return etat_courant in etats_finaux
 
 
-#verifie si l'automate accepte un mot (avec @lacatholille.fr)
+# verifie si l'automate accepte un mot (avec @lacatholille.fr)
 def accepter_mot_lacatho(mot):
     global les_regles, etats_initiaux, etats_finaux
     etat_courant = etats_initiaux[0]
@@ -220,13 +221,11 @@ def accepter_mot_lacatho(mot):
         return False
 
 
+automate_initial()  # lis le fichier et affiche l'automate
+completer_automate()  # completer l'automate et affiche l'automate complet
+determiniser_automate()  # determiniser l'automate et affiche l'automate deterministe
+# print(accepter_mot("aaabd")) #verifie si le mot est accepté par l'automate
 
-automate_initial() #lis le fichier et affiche l'automate
-completer_automate() #completer l'automate et affiche l'automate complet
-determiniser_automate() #determiniser l'automate et affiche l'automate deterministe
-#print(accepter_mot("aaabd")) #verifie si le mot est accepté par l'automate
 
-etats_accessibles()
-etats_co_accessibles()
-
-print(accepter_mot_lacatho("aymen.kadri8@lacatholille.fr")) #verifie si le mot est accepté par l'automate ( unique pour les mail @lacatholille.fr)
+# verifie si le mot est accepté par l'automate ( unique pour les mail @lacatholille.fr)
+print(accepter_mot_lacatho("aymen.kadri8@lacatholille.fr"))
