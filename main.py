@@ -44,28 +44,32 @@ def afficher_regles(regles):
         origine, c, destination = regle
         print(f"{origine} --{c}--> {destination}")
 
-
+def afficher_liste(l):
+    print("[",end="")
+    for element in l:
+        print(element, end="") 
+    print("]")
 # affiche les etats accessibles
 def etats_accessibles():
     global les_regles
-    accessibles = set()
-    accessibles.add(etats_initiaux[0])
+    accessibles = []
     for regle in les_regles:
         origine, c, destination = regle
-        if origine in accessibles:
-            accessibles.add(destination)
-    print(f"États accessibles : {accessibles}")
+        if origine not in accessibles:
+            accessibles.append(origine)
+    afficher_liste(accessibles)
 
 
 # affiche les etats co-accessibles
 def etats_co_accessibles():
     global les_regles
-    co_accessibles = set(etats_finaux)
+    co_accessibles = []
     for regle in les_regles:
         origine, c, destination = regle
-        if destination in co_accessibles:
-            co_accessibles.add(origine)
-    print(f"États co-accessibles : {co_accessibles}")
+        if destination not in co_accessibles:
+            co_accessibles.append(destination)
+    afficher_liste(co_accessibles)
+    
 
 #affiche un automate, avec en parametre le graphe a afficher et les regles de transition
 def afficher_automate(g, r):
@@ -152,7 +156,7 @@ def determiniser_automate():
     if not est_deterministe():
         print("L'automate n'est pas déterministe")
         nouveaux_etats = set()
-        etats_a_traiter = deque()
+        etats_a_traiter = deque() # on utilise une file pour traiter les états dans l'ordre
         etats_a_traiter.append(tuple(etats_initiaux))
         nouveaux_etats.add(tuple(etats_initiaux))
 
@@ -220,4 +224,9 @@ def accepter_mot_lacatho(mot):
 automate_initial() #lis le fichier et affiche l'automate
 completer_automate() #completer l'automate et affiche l'automate complet
 determiniser_automate() #determiniser l'automate et affiche l'automate deterministe
-print(accepter_mot("aaabd")) #verifie si le mot est accepté par l'automate
+#print(accepter_mot("aaabd")) #verifie si le mot est accepté par l'automate
+
+etats_accessibles()
+etats_co_accessibles()
+
+print(accepter_mot_lacatho("aymen.kadri8@lacatholille.fr")) #verifie si le mot est accepté par l'automate ( unique pour les mail @lacatholille.fr)

@@ -11,4 +11,6 @@ etape 4 :
 Etats finaux [2]	
 
 etape 5 : 
-regles de création  [1 -> a -> 2]
+regles de création  [1 -> a -> 2; 1 -> b -> 1]
+
+Le fichier automate.txt contient au préalable un automate non deterministe pour tester le programme.
