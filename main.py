@@ -137,42 +137,73 @@ def est_deterministe():
 
 
 def determiniser_automate():
-    global alphabet, etats, etats_initiaux, etats_finaux, les_regles, les_regles_deterministe, etat_initial_deterministe, etats_finaux_deterministe
+    global les_regles_complete, alphabet, etats, etats_initiaux, etats_finaux, les_regles_deterministe, etat_initial_deterministe, etats_finaux_deterministe
     if est_deterministe():
         print("L'automate est déjà déterministe.")
-        les_regles_deterministe = les_regles_complete
-        etat_initial_deterministe = etats_initiaux[0]
+        etat_initial_deterministe = etats_initiaux
         etats_finaux_deterministe = etats_finaux
-    else:
-        pass
+        les_regles_deterministe = les_regles
+        return
+    etat_initial_deterministe.append(etats_initiaux[0])
+    etats_deterministes = [etat_initial_deterministe]
+    for etats_deterministe in etats_deterministes:
+        for lettre in alphabet:
+            nouvel_etat = set()
+            for etat in etats_deterministe:
+                for regle in les_regles_complete:
+                    origine, c, destination = regle
+                    if origine == etat and c == lettre:
+                        nouvel_etat.add(destination)
+            if nouvel_etat:
+                les_regles_deterministe.append(
+                    [",".join(etats_deterministe), lettre, ",".join(sorted(nouvel_etat))])
+                if sorted(nouvel_etat) not in etats_deterministes:
+                    etats_deterministes.append(sorted(nouvel_etat))
+    for etats_deterministe in etats_deterministes:
+        if set(etats_deterministe) & set(etats_finaux):
+            etats_finaux_deterministe.append(",".join(etats_deterministe))
+    for etat in etats_deterministes:
+        graphe_deterministe.node(",".join(etat), shape='circle')
+    for regle in les_regles_deterministe:
+        origine, c, destination = regle
+        graphe_deterministe.edge(origine, destination, label=c)
+    for etat_initial in etat_initial_deterministe:
+        graphe_deterministe.node("Etat"+str(etat_initial),
+                                 shape='point', style='bold')
+        graphe_deterministe.edge(
+            "Etat"+str(etat_initial), etat_initial_deterministe[0])
+    for etat_final in etats_finaux_deterministe:
+        graphe_deterministe.node(
+            etat_final, shape='doublecircle', style='bold')
+    afficher_automate(graphe_deterministe, les_regles_deterministe)
 
 
 def accepter_mot(mot):
-    global etats_initiaux, les_regles
+    global les_regles_deterministe, etat_initial_deterministe, etats_finaux_deterministe
     etat_courant = etats_initiaux[0]
     for lettre in mot:
-        for regle in les_regles_deterministe:
-            origine, c, destination = regle
+        for origine, c, destination in les_regles:
             if origine == etat_courant and c == lettre:
                 etat_courant = destination
+                print("la lettre", lettre, "est acceptée")
                 break
         else:
+            print("la lettre", lettre, "n'est pas acceptée")
             return False
-    if etat_courant in etats_finaux_deterministe:
-        return True
-    else:
-        return False
+    return etat_courant in etats_finaux
 
 
 lecture_fichier()
 completer_automate()
-afficher_regles(les_regles)
+# afficher_regles(les_regles)
 print("-------------------------")
-afficher_regles(les_regles_complete)
-afficher_automate(graphe, les_regles)
+print(est_deterministe())
+
+# afficher_regles(les_regles_complete)
+#afficher_automate(graphe, les_regles)
 afficher_automate(graphe_complet, les_regles_complete)
 determiniser_automate()
 print("-------------------------")
-afficher_regles(les_regles_deterministe)
+# afficher_regles(les_regles_deterministe)
 afficher_automate(graphe_deterministe, les_regles_deterministe)
-print(accepter_mot("aymen.kadri@"))
+print(accepter_mot("a.k@lacatholille.fr"))
